@@ -17,13 +17,14 @@ services:
       - default
   db:
     image: mysql
+    restart: always
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: laravel
+      MYSQL_DATABASE: lucy_fiat
       MYSQL_USER: user
       MYSQL_PASSWORD: test
-      MYSQL_ROOT_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: test_root
     volumes:
       - ./dump:/docker-entrypoint-initdb.d
       - persistent:/var/lib/mysql
@@ -38,7 +39,7 @@ services:
     environment:
       MYSQL_USER: user
       MYSQL_PASSWORD: test
-      MYSQL_ROOT_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: test_root
     networks:
       - default
 volumes:
