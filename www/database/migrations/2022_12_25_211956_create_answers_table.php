@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
             $table->tinyInteger('test_id');
-            $table->tinyInteger('selected_option');
+            $table->tinyInteger('option_id');
+            $table->tinyInteger('user_id');
             $table->timestamps();
         });
     }
