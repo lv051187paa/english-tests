@@ -17,7 +17,7 @@ class AnswerController extends Controller
      */
     public function index(): JsonResponse
     {
-        $answers = Answer::all()->groupBy('test_id')->count();
+        $answers = Answer::all()->groupBy('test_id');
 
         return response()->json([
             'status' => true,
