@@ -1,0 +1,11 @@
+.add-option {
+  opacity: 0;
+  transition: .3s;
+  display: inline-block;
+}
+
+.add-option:hover {
+  opacity: 1;
+  transition: .3s;
+  cursor: pointer;
+}
