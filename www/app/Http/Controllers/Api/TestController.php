@@ -23,12 +23,22 @@ class TestController extends Controller
      */
     public function index()
     {
-        $tests = Test::all();
+        $tests = Test::with("testGroup:group_name,id")->get();
 
         return response()->json([
             'status' => true,
             'tests' => $tests
         ]);
+    }
+
+    public function getTestsByTesGroupId(Request $request): JsonResponse
+    {
+      $tests = Test::with("testGroup:group_name,id")->where("test_group_id", $request->test_group_id)->get();
+
+      return response()->json([
+        'status' => true,
+        'tests' => $tests
+      ]);
     }
 
     /**

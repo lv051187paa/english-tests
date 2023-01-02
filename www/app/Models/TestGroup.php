@@ -8,20 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Test extends Model
+class TestGroup extends Model
 {
   use HasFactory;
 
-  protected $fillable = ['question'];
-  protected $with = ['options:id,text,is_correct,test_id'];
+  protected $fillable = ["group_name"];
 
-  public function options(): HasMany
+  public function tests(): HasMany
   {
-    return $this->hasMany(Option::class);
-  }
-
-  public function testGroup(): BelongsTo
-  {
-    return $this->belongsTo(TestGroup::class);
+    return $this->hasMany(Test::class);
   }
 }

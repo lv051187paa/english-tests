@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Option extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $fillable = ['text', 'is_correct', 'test_id'];
+  protected $fillable = ['text', 'is_correct', 'test_id'];
 
-    public function test(): BelongsTo
-    {
-        return $this->belongsTo(Test::class);
-    }
+  public function test(): BelongsTo
+  {
+    return $this->belongsTo(Test::class);
+  }
 }
