@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import {
   Outlet,
   useNavigate,
-  useLocation,
 } from "react-router-dom";
 import { Button, Layout, Menu } from "antd";
 import { useAuth } from "../../hooks/useAuth.js";
@@ -16,8 +15,7 @@ const { Header, Content, Footer } = Layout;
 const AdminLayout = props => {
   const auth = useAuth();
   let navigate = useNavigate();
-  const location = useLocation();
-  console.log(location);
+
   const onLogout = () => auth.signout(() => navigate("/login"));
 
   return (
@@ -28,7 +26,7 @@ const AdminLayout = props => {
           <Menu
             theme="dark"
             mode="horizontal"
-            defaultSelectedKeys={["2"]}
+            defaultSelectedKeys={["1"]}
             items={new Array(3).fill(null).map((_, index) => {
               const key = index + 1;
               return {
