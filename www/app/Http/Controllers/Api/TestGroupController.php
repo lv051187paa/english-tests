@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTestGroupRequest;
 use App\Models\TestGroup;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class TestGroupController extends Controller
 {

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\OptionController;
 use App\Http\Controllers\Api\TestController;
 use App\Http\Controllers\Api\TestGroupController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,15 +20,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout']);
 
+Route::apiResource('users', UserController::class, ['except' => 'store'])->middleware("auth:api");
+Route::post('users', [UserController::class, "store"]);
+
 Route::apiResource('test-groups', TestGroupController::class);
 Route::apiResource('tests', TestController::class);
-Route::get('tests/group/{test_group_id}', [TestController::class, "getTestsByTesGroupId"]);
+Route::get('tests/group/{test_group_id}/quiz-questions', [TestController::class, "getTestsByTestGroupIdForUser"]);
+Route::get('tests/group/{test_group_id}', [TestController::class, "getTestsByTestGroupId"]);
 Route::apiResource('tests.options', OptionController::class);
 Route::apiResource('answers', AnswerController::class);

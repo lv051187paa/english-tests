@@ -31,15 +31,29 @@ class TestController extends Controller
         ]);
     }
 
-    public function getTestsByTesGroupId(Request $request): JsonResponse
+    public function getTestsByTestGroupId(Request $request): JsonResponse
     {
-      $tests = Test::with("testGroup:group_name,id")->where("test_group_id", $request->test_group_id)->get();
+      $tests = Test::with("testGroup:group_name,id")
+        ->where("test_group_id", $request->test_group_id)
+        ->get();
 
       return response()->json([
         'status' => true,
         'tests' => $tests
       ]);
     }
+
+  public function getTestsByTestGroupIdForUser(Request $request): JsonResponse
+  {
+    $tests = Test::with(["options:id,text,test_id", "testGroup:group_name,id"])
+      ->where("test_group_id", $request->test_group_id)
+      ->get();
+
+    return response()->json([
+      'status' => true,
+      'tests' => $tests
+    ]);
+  }
 
     /**
      * Store a newly created resource in storage.
