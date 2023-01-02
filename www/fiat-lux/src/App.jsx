@@ -1,5 +1,5 @@
 import {
-  createBrowserRouter,
+  createBrowserRouter, Link,
   RouterProvider,
 } from "react-router-dom";
 
@@ -15,13 +15,21 @@ import './App.css'
 const router = createBrowserRouter([
   {
     path: "/admin",
-    element: <RequireAuth>
+    element: (
+      <RequireAuth>
         <AdminLayout />
-      </RequireAuth>,
+      </RequireAuth>
+    ),
+    handle: {
+      crumb: () => <Link to="/admin">Admin</Link>
+    },
     children: [
       {
         element: <Dashboard />,
-        index: true
+        index: true,
+        handle: {
+          crumb: () => <span>Dashboard</span>
+        }
       },
       {
         path: '*',
