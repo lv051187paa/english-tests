@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Checkbox, Form, Input, Modal} from "antd";
-import {addTestOption} from "../../api/tests.js";
+import {addTestOption} from "../../../api/tests.js";
 
 const AddOptionModal = ({ isModalOpen, onModalClose, testId, onOptionCreated }) => {
   const [form] = Form.useForm();

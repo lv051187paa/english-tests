@@ -5,22 +5,31 @@ const baseApi = axios.create({
 });
 
 baseApi.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
 
-  // if (router.currentRoute.meta?.public) {
-  //   return config;
-  // }
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+      return config;
+    }
 
-  if (token) {
-    // eslint-disable-next-line no-param-reassign
-    config.headers.Authorization = `Bearer ${token}`;
     return config;
+  },
+  (error) => {
+    Promise.reject(error)
+  });
+
+baseApi.interceptors.response.use(function (response) {
+  // Any status code that lie within the range of 2xx cause this function to trigger
+  // Do something with response data
+  return response;
+}, function (error) {
+  // Any status codes that falls outside the range of 2xx cause this function to trigger
+  // Do something with response error
+  if(error.response.status === 401) {
+    localStorage.removeItem('token');
+    location.href = "/login";
   }
-
-  // router.push('/login');
-
-  return config;
-},
-  (error) => Promise.reject((error)));
+  return Promise.reject(error);
+});
 
 export default baseApi;

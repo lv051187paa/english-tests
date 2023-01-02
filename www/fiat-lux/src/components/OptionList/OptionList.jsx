@@ -18,7 +18,7 @@ const OptionList = ({ id, options, onOptionModalOpen }) => {
           </Tag>
         )
       })}
-      <div className="add-option">
+      <div className={options.length ? "add-option" : ""}>
         <PlusCircleOutlined onClick={handleOptionModalOpen} />
       </div>
     </div>

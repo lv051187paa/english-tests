@@ -10,7 +10,13 @@ use Illuminate\Http\Request;
 
 class TestController extends Controller
 {
-    /**
+
+  public function __construct()
+  {
+    $this->middleware('auth:api');
+  }
+
+  /**
      * Display a listing of the resource.
      *
      * @return JsonResponse
@@ -51,7 +57,7 @@ class TestController extends Controller
      */
     public function update(StoreTestRequest $request, Test $test)
     {
-        $test::update($request->all());
+        $test->update($request->all());
 
         return response()->json([
             'status' => true,

@@ -1,18 +1,16 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import {Checkbox, Col, Input, Modal, Radio, Row, Space} from "antd";
-import {CloseOutlined} from "@ant-design/icons";
-import OptionEditForm from "../OptionEditForm/index.js";
-import {updateTestOption} from "../../api/tests.js";
+import {Modal, Space} from "antd";
+import OptionEditForm from "../../OptionEditForm/index.js";
+import {updateTestOption} from "../../../api/tests.js";
 
 const EditTestModal = ({isOpen, onModalClose, test}) => {
-  console.log(test)
-  if (!test) {
+  if (!test || !isOpen) {
     return null;
   }
 
   const correctOption = test.options.find(({ is_correct }) => is_correct)
-  const [correctOptionId, setCorrectOptionId] = useState(correctOption.id)
+  const [correctOptionId, setCorrectOptionId] = useState(correctOption?.id || null)
 
   const handleCorrectOptionChange = (optionId) => {
     setCorrectOptionId(optionId)
