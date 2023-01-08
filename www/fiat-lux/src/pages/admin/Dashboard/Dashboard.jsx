@@ -1,102 +1,60 @@
-import React, {useEffect, useState} from 'react';
-import PropTypes from 'prop-types';
-import {getTestList} from "../../../api/tests.js";
-import {Button, Col, Row, Spin, Table, Typography} from "antd";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import { Button, Col, List, Row, Spin, Table, Typography } from "antd";
 
-import AddOptionModal from "../../../components/modals/AddOptionModal/AddOptionModal.jsx";
-import OptionList from "../../../components/OptionList";
-
-import "./dashboard.css"
-import EditTestModal from "../../../components/modals/EditTestModal/index.js";
-import AddTestModal from "../../../components/modals/AddTestModal/index.js";
 import EditableRow from "../../../components/tableComponents/EditableRow.jsx";
 import EditableTextCell from "../../../components/tableComponents/EditableTextCell/index.js";
 
-const Dashboard = () => {
-  const [testList, setTestList] = useState([]);
+import { getTestGroups } from "../../../api/testsGroups.js";
+import AddTestGroupModal from "../../../components/modals/AddTestGroupModal/index.js";
+
+const Dashboard = props => {
+  const [testGroupList, setTestGroupList] = useState([]);
+  const [isTestGroupModalOpen, setIsTestGroupModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isTestModalOpen, setIsTestModalOpen] = useState(false);
-  const [isOptionModalOpen, setIsOptionModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedTestId, setSelectedTestId] = useState(null);
-
-  const handleOptionModalOpen = (testId) => {
-    setIsOptionModalOpen(true)
-    setSelectedTestId(testId);
-  }
-
-  const handleOptionModalClose = () => {
-    setIsOptionModalOpen(false)
-    setSelectedTestId(null);
-  }
-
-  const handleOptionCreated = (data) => {
-    setIsLoading(true)
-    getTestList()
-      .then(({ data }) => {
-        setTestList(data.tests)
-      })
-      .finally(() => setIsLoading(false))
-  }
-
-  const handleEditOpen = ({ id }) => {
-    setIsEditModalOpen(true);
-    setSelectedTestId(id);
-  }
-
-  const handleEditModalClose = () => {
-    setIsEditModalOpen(false);
-    setSelectedTestId(null)
-  }
 
   const columns = [
     {
-      title: 'Question',
-      dataIndex: 'question',
-      key: 'question',
+      title: "Test Name",
+      dataIndex: "group_name",
+      key: "group_name",
       editable: true,
+      render: (text, original) => <Link to={`/admin/questions/${original.id}`}>{text}</Link>
     },
     {
-      title: 'Options',
-      dataIndex: 'options',
-      key: 'options',
-      render: (_, original) => <OptionList onOptionModalOpen={handleOptionModalOpen} {...original} />
+      title: "Questions count",
+      dataIndex: "questions",
+      key: "questions",
+      render: (_, original) => <span>{original.tests?.length || 0}</span>
     },
     {
-      title: 'Actions',
-      dataIndex: 'operation',
+      title: "Actions",
+      dataIndex: "operation",
       render: (_, record) =>
-        testList.length >= 1 ? (
-          <Typography.Link onClick={() => handleEditOpen(record)}>
-            Edit
+        testGroupList.length >= 1 ? (
+          <Typography.Link>
+            Delete
           </Typography.Link>
         ) : null,
     },
   ];
 
   useEffect(() => {
-    getTestList()
+    getTestGroups()
       .then(({ data }) => {
-        setTestList(data.tests)
+        setTestGroupList(data.groups);
       })
-      .finally(() => setIsLoading(false))
-  }, [])
+      .catch(error => console.error(`test groups loading fail: ${error}`))
+      .finally(() => setIsLoading(false));
+  }, []);
 
-  const handleAddTest = (test) => {
-    setTestList([...testList, { ...test, options: [] }])
+  const handleTestGroupCreated = (testGroup) => {
+    setTestGroupList([...testGroupList, testGroup]);
   }
 
-  const handleTestUpdate = (test) => {
-    const currentTestIndex = testList.findIndex(({ id }) => id === test.id);
-    const testsCopy = [...testList];
-    testsCopy[currentTestIndex] = test;
-
-    setTestList(testsCopy);
-
-  }
-
-  if(isLoading) {
-    return <Spin size="large" />
+  if (isLoading) {
+    return <Spin size="large" />;
   }
 
   return (
@@ -105,14 +63,34 @@ const Dashboard = () => {
         <Col>
           <Button
             type="primary"
-            onClick={() => setIsTestModalOpen(true)}
+            onClick={() => setIsTestGroupModalOpen(true)}
           >
             Add Test
           </Button>
         </Col>
       </Row>
       <Table
-        dataSource={testList.map(({ id, ...rest }) => ({ key: id, id, ...rest }))}
+        dataSource={testGroupList.map(({ id, ...rest }) => ({ key: id, id, ...rest }))}
+        expandable={{
+          expandedRowRender: (record) => {
+            record.tests.map((test, index) => <div key={index}>{test.question}</div>);
+
+            return (
+              <List
+                size="small"
+                itemLayout="horizontal"
+                dataSource={record.tests}
+                renderItem={(item) => (
+                  <List.Item>
+                    {item.question}
+                  </List.Item>
+
+                )}
+              />
+            );
+          },
+          rowExpandable: (record) => record.name !== "Not Expandable",
+        }}
         columns={columns.map((col) => {
           if (!col.editable) {
             return col;
@@ -124,7 +102,7 @@ const Dashboard = () => {
               editable: col.editable,
               dataIndex: col.dataIndex,
               title: col.title,
-              onTestUpdated: handleTestUpdate,
+              // onTestUpdated: handleTestUpdate,
             }),
           };
         })}
@@ -135,28 +113,15 @@ const Dashboard = () => {
           }
         }}
       />
-      <AddTestModal
-        isOpen={isTestModalOpen}
-        onModalClose={() => setIsTestModalOpen(false)}
-        onTestCreated={handleAddTest}
-      />
-      <AddOptionModal
-        isModalOpen={isOptionModalOpen}
-        onModalClose={handleOptionModalClose}
-        testId={selectedTestId}
-        onOptionCreated={handleOptionCreated}
-      />
-      <EditTestModal
-        isOpen={isEditModalOpen}
-        test={testList.find(({ id }) => id === selectedTestId)}
-        onModalClose={handleEditModalClose}
+      <AddTestGroupModal
+        isOpen={isTestGroupModalOpen}
+        onModalClose={() => setIsTestGroupModalOpen(false)}
+        onTestGroupCreated={handleTestGroupCreated}
       />
     </>
   );
 };
 
-Dashboard.propTypes = {
-
-};
+Dashboard.propTypes = {};
 
 export default Dashboard;

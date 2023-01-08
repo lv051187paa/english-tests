@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Modal, Space } from "antd";
 import OptionEditForm from "../../OptionEditForm/index.js";
-import { updateTestOption } from "../../../api/tests.js";
+import { updateQuestionOption } from "../../../api/questions.js";
 
 const EditTestModal = ({ isOpen, onModalClose, test }) => {
   if (!test || !isOpen) {
@@ -17,7 +17,7 @@ const EditTestModal = ({ isOpen, onModalClose, test }) => {
   };
 
   const handleOptionSave = (data, optionId) => {
-    updateTestOption(test.id, optionId, data)
+    updateQuestionOption(test.id, optionId, data)
       .then(({ data }) => {
         console.log(data);
       });

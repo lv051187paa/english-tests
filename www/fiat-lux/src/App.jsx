@@ -8,9 +8,10 @@ import AuthProvider from "./contexts/AuthProvider.jsx";
 import RequireAuth from "./components/RequireAuth/RequireAuth.jsx";
 
 import AdminLayout from "./components/AdminLayout";
-import Dashboard from "./pages/admin/Dashboard";
+import Dashboard from "./pages/admin/Dashboard/index.js";
+import Questions from "./pages/admin/Questions";
 
-import './App.css'
+import "./App.css";
 
 const router = createBrowserRouter([
   {
@@ -32,25 +33,39 @@ const router = createBrowserRouter([
         }
       },
       {
-        path: '*',
+        element: <Questions />,
+        path: "/admin/questions/:groupId",
+        handle: {
+          crumb: () => <span>Questions</span>
+        }
+      },
+      {
+        element: <Questions />,
+        path: "/admin/questions",
+        handle: {
+          crumb: () => <span>Questions</span>
+        }
+      },
+      {
+        path: "*",
         element: <div>No match</div>,
       }
     ]
   },
   {
-    path: '/login',
-    element: <Login/>,
+    path: "/login",
+    element: <Login />,
   },
   {
-    path: '*',
+    path: "*",
     element: <div>No match</div>,
   }
 ]);
 
 const App = () => (
   <AuthProvider>
-    <RouterProvider router={router}/>
+    <RouterProvider router={router} />
   </AuthProvider>
-)
+);
 
-export default App
+export default App;

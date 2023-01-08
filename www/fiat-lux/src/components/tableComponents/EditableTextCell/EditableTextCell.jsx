@@ -2,7 +2,9 @@ import { useContext, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { Form, Input } from "antd";
 import { EditableTableContext } from "../../../contexts/editableTableContext.js";
-import { updateTest } from "../../../api/tests.js";
+import { updateQuestion } from "../../../api/questions.js";
+
+import "./editableTextCell.css";
 
 const EditableTextCell = ({
   title,
@@ -18,7 +20,7 @@ const EditableTextCell = ({
   const form = useContext(EditableTableContext);
 
   const handleSave = (data) => {
-    updateTest(record.id, data)
+    updateQuestion(record.id, data)
       .then(({ data }) => {
         onTestUpdated(data.test);
       });
@@ -59,8 +61,8 @@ const EditableTextCell = ({
           },
         ]}
       >
-                <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-            </Form.Item>
+        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+      </Form.Item>
     ) : (
       <div
         className="editable-cell-value-wrap"
@@ -69,8 +71,8 @@ const EditableTextCell = ({
         }}
         onClick={toggleEdit}
       >
-                {children}
-            </div>
+        {children}
+      </div>
     );
   }
   return <td {...restProps}>{childNode}</td>;

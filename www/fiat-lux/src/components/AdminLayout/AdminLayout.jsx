@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import {
   Outlet,
   useNavigate,
+  useLocation, Link,
 } from "react-router-dom";
 import { Button, Layout, Menu } from "antd";
 import { useAuth } from "../../hooks/useAuth.js";
@@ -12,30 +13,39 @@ import Breadcrumbs from "../Breadcrumbs/index.js";
 
 const { Header, Content, Footer } = Layout;
 
+const routes = [
+  {
+    key: '/admin',
+    label: 'Dashboard',
+  },
+  {
+    key: '/admin/questions',
+    label: 'Questions'
+  }
+];
+
 const AdminLayout = props => {
   const auth = useAuth();
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentRoute = routes.find(({ key }) => key === location.pathname);
 
   const onLogout = () => auth.signout(() => navigate("/login"));
 
   return (
     <Layout className="admin-layout">
       <Header className="main-header">
-        <div>
-          <div className="logo" />
-          <Menu
-            theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={["1"]}
-            items={new Array(3).fill(null).map((_, index) => {
-              const key = index + 1;
-              return {
-                key,
-                label: `nav ${key}`,
-              };
-            })}
-          />
-        </div>
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={[currentRoute?.key]}
+          items={routes.map(({ key, label }) => {
+            return {
+              key,
+              label: <Link to={key}>{label}</Link>,
+            };
+          })}
+        />
         <Button type="primary" onClick={onLogout}>
           Logout
         </Button>

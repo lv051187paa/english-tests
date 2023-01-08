@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Form, Input, Modal} from "antd";
-import {addTest} from "../../../api/tests.js";
+import {addQuestion} from "../../../api/questions.js";
 
-const AddTestModal = ({ isOpen, onModalClose, onTestCreated }) => {
+const AddQuestionModal = ({ isOpen, onModalClose, onTestCreated }) => {
   const [form] = Form.useForm();
 
   const submitTest = () => {
@@ -12,7 +12,7 @@ const AddTestModal = ({ isOpen, onModalClose, onTestCreated }) => {
       .then(({ question }) => {
         form.resetFields();
 
-        addTest({ question })
+        addQuestion({ question })
           .then(({ data }) => {
             onTestCreated(data.test)
           })
@@ -36,8 +36,8 @@ const AddTestModal = ({ isOpen, onModalClose, onTestCreated }) => {
   );
 };
 
-AddTestModal.propTypes = {
+AddQuestionModal.propTypes = {
 
 };
 
-export default AddTestModal;
+export default AddQuestionModal;
