@@ -80,7 +80,6 @@ class Test extends Model
     private array $options;
 
     protected $fillable = ['question', 'test_group_id'];
-    protected $with = ['options:id,text,is_correct,test_id'];
 
     public function options(): HasMany
     {

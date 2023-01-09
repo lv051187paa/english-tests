@@ -11,7 +11,7 @@ class Answer extends Model
     use HasFactory;
 
     protected $fillable = ['test_id', 'user_id', 'option_id'];
-    protected $with = ['test:question,id', 'option:id,text,is_correct', 'user:id,name,email'];
+//    protected $with = ['test:question,id', 'option:id,text,is_correct', 'user:id,name,email'];
 
     public function test(): BelongsTo
     {

@@ -24,7 +24,7 @@ class AnswerController extends Controller
    */
   public function index(): JsonResponse
   {
-    $answers = Answer::all()->groupBy('test_id');
+    $answers = Answer::with(['test:question,id', 'option:id,text,is_correct', 'user:id,name,email'])->get()->groupBy('test_id');
 
     return response()->json([
       'status' => true,

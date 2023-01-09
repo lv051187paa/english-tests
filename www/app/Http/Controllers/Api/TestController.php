@@ -46,7 +46,7 @@ class TestController extends Controller
      */
     public function index()
     {
-        $tests = Test::with("testGroup:group_name,id")->get();
+        $tests = Test::with(["options:id,text,is_correct,test_id", "testGroup:group_name,id"])->get();
 
         return response()->json([
             'status' => true,
@@ -94,7 +94,7 @@ class TestController extends Controller
      */
     public function getTestsByTestGroupId(Request $request): JsonResponse
     {
-        $tests = Test::with("testGroup:group_name,id")
+        $tests = Test::with(["options:id,text,is_correct,test_id", "testGroup:group_name,id"])
             ->where("test_group_id", $request->test_group_id)
             ->get();
 
