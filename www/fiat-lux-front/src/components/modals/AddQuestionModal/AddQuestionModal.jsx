@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Form, Input, Modal} from "antd";
 import {addQuestion} from "../../../api/questions.js";
 
-const AddQuestionModal = ({ isOpen, onModalClose, onTestCreated }) => {
+const AddQuestionModal = ({ isOpen, onModalClose, onTestCreated, selectedTestGroup }) => {
   const [form] = Form.useForm();
 
   const submitTest = () => {
@@ -12,9 +12,10 @@ const AddQuestionModal = ({ isOpen, onModalClose, onTestCreated }) => {
       .then(({ question }) => {
         form.resetFields();
 
-        addQuestion({ question })
+        addQuestion({ question, test_group_id: selectedTestGroup })
           .then(({ data }) => {
-            onTestCreated(data.test)
+            onTestCreated(data.test);
+            onModalClose();
           })
       })
   }

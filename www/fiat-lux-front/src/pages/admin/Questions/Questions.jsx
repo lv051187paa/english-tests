@@ -1,71 +1,81 @@
-import React, {useEffect, useState} from 'react';
-import PropTypes from 'prop-types';
-import { getQuestionList, getQuestionListByGroupId } from "../../../api/questions.js";
-import {Button, Col, Row, Spin, Table, Typography} from "antd";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button, Col, Row, Select, Spin, Table, Typography } from "antd";
 
 import AddOptionModal from "../../../components/modals/AddOptionModal/AddOptionModal.jsx";
 import OptionList from "../../../components/OptionList";
-
-import "./questions.css"
 import EditTestModal from "../../../components/modals/EditTestModal/index.js";
 import AddQuestionModal from "../../../components/modals/AddQuestionModal/index.js";
 import EditableRow from "../../../components/tableComponents/EditableRow.jsx";
 import EditableTextCell from "../../../components/tableComponents/EditableTextCell/index.js";
-import { useParams } from "react-router-dom";
+
+import { getQuestionList, getQuestionListByGroupId } from "../../../api/questions.js";
+
+import "./questions.css";
+import { getTestGroups } from "../../../api/testsGroups.js";
+import { getTesGroupsSelectOptions } from "./utils.js";
 
 const Questions = () => {
+  const { groupId } = useParams();
+  const navigate = useNavigate();
+
   const [testList, setTestList] = useState([]);
+  const [testGroupList, setTestGroupList] = useState([]);
+  const [selectedGroupId, setSelectedGroupId] = useState(Number(groupId) ?? null)
   const [isLoading, setIsLoading] = useState(true);
   const [isTestModalOpen, setIsTestModalOpen] = useState(false);
   const [isOptionModalOpen, setIsOptionModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedTestId, setSelectedTestId] = useState(null);
 
+  const fetchData = groupId ? () => getQuestionListByGroupId(groupId) : getQuestionList;
+
   const handleOptionModalOpen = (testId) => {
-    setIsOptionModalOpen(true)
+    setIsOptionModalOpen(true);
     setSelectedTestId(testId);
-  }
+  };
 
   const handleOptionModalClose = () => {
-    setIsOptionModalOpen(false)
+    setIsOptionModalOpen(false);
     setSelectedTestId(null);
-  }
+  };
 
   const handleOptionCreated = (data) => {
-    setIsLoading(true)
-    getQuestionList()
+    setIsLoading(true);
+    fetchData()
       .then(({ data }) => {
-        setTestList(data.tests)
+        setTestList(data.tests);
       })
-      .finally(() => setIsLoading(false))
-  }
+      .finally(() => setIsLoading(false));
+  };
 
   const handleEditOpen = ({ id }) => {
     setIsEditModalOpen(true);
     setSelectedTestId(id);
-  }
+  };
 
   const handleEditModalClose = () => {
     setIsEditModalOpen(false);
-    setSelectedTestId(null)
-  }
+    setSelectedTestId(null);
+  };
 
   const columns = [
     {
-      title: 'Question',
-      dataIndex: 'question',
-      key: 'question',
+      title: "Question",
+      dataIndex: "question",
+      key: "question",
       editable: true,
     },
     {
-      title: 'Options',
-      dataIndex: 'options',
-      key: 'options',
+      title: "Options",
+      dataIndex: "options",
+      key: "options",
       render: (_, original) => <OptionList onOptionModalOpen={handleOptionModalOpen} {...original} />
     },
     {
-      title: 'Actions',
-      dataIndex: 'operation',
+      title: "Actions",
+      dataIndex: "operation",
       render: (_, record) =>
         testList.length >= 1 ? (
           <Typography.Link onClick={() => handleEditOpen(record)}>
@@ -74,21 +84,34 @@ const Questions = () => {
         ) : null,
     },
   ];
-  const { groupId } = useParams();
-  const fetchData = groupId ? () => getQuestionListByGroupId(groupId) : getQuestionList
 
   useEffect(() => {
 
-    fetchData()
+    Promise.all([
+      fetchData(),
+      getTestGroups(),
+    ])
+      .then(([testsResponse, testGroupsResponse]) => {
+        setTestList(testsResponse.data.tests);
+        const testGroupsOptions = getTesGroupsSelectOptions(testGroupsResponse.data.groups);
+        setTestGroupList(testGroupsOptions);
+      })
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  useEffect(() => {
+    navigate(`/admin/questions/${selectedGroupId}`)
+    setIsLoading(true);
+    getQuestionListByGroupId(selectedGroupId)
       .then(({ data }) => {
-        setTestList(data.tests)
+        setTestList(data.tests);
       })
       .finally(() => setIsLoading(false))
-  }, [])
+  }, [selectedGroupId])
 
   const handleAddTest = (test) => {
-    setTestList([...testList, { ...test, options: [] }])
-  }
+    setTestList([...testList, { ...test, options: [] }]);
+  };
 
   const handleTestUpdate = (test) => {
     const currentTestIndex = testList.findIndex(({ id }) => id === test.id);
@@ -96,16 +119,28 @@ const Questions = () => {
     testsCopy[currentTestIndex] = test;
 
     setTestList(testsCopy);
+  };
 
-  }
+  const handleTestGroupChange = (value) => setSelectedGroupId(value)
 
-  if(isLoading) {
-    return <Spin size="large" />
+  if (isLoading) {
+    return <Spin size="large" />;
   }
 
   return (
     <>
-      <Row justify="end">
+      <Row justify="space-between">
+        <Col>
+          <Select
+            style={{
+              width: 120,
+            }}
+            defaultValue={selectedGroupId}
+            placeholder="Select a test"
+            onChange={handleTestGroupChange}
+            options={testGroupList}
+          />
+        </Col>
         <Col>
           <Button
             type="primary"
@@ -142,6 +177,7 @@ const Questions = () => {
       <AddQuestionModal
         isOpen={isTestModalOpen}
         onModalClose={() => setIsTestModalOpen(false)}
+        selectedTestGroup={selectedGroupId}
         onTestCreated={handleAddTest}
       />
       <AddOptionModal
@@ -159,8 +195,6 @@ const Questions = () => {
   );
 };
 
-Questions.propTypes = {
-
-};
+Questions.propTypes = {};
 
 export default Questions;
