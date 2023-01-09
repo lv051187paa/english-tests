@@ -21,13 +21,65 @@ class AuthController extends Controller
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Post(
+     *     path="/login",
+     *     tags={"Auth"},
+     *     summary="Login",
+     *     @OA\RequestBody(
+     *        required=true,
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(
+     *                 property="email",
+     *                 type="string",
+     *                 format="email"
+     *             ),
+     *             @OA\Property(
+     *                 property="password",
+     *                 type="string",
+     *                 format="password"
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *        response="200",
+     *        description="Successful operation",
+     *        @OA\JsonContent(
+     *            @OA\Property(
+     *                property="access_token",
+     *                type="string",
+     *            ),
+     *            @OA\Property(
+     *                property="token_type",
+     *                type="string",
+     *            ),
+     *            @OA\Property(
+     *                property="expires_in",
+     *                type="integer",
+     *            ),
+     *        ),
+     *     ),
+     *     @OA\Response(
+     *        response="403",
+     *        description="Forbidden access",
+     *     ),
+     *     @OA\Response(
+     *        response="422",
+     *        description="Wrong credentials",
+     *     ),
+     *     @OA\Response(
+     *        response="400",
+     *        description="Bad request",
+     *     )
+     * )
      */
     public function login()
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if (!$token = auth()->attempt($credentials)) {
+            return response()->json(['error' => 'Forbidden'], 403);
         }
 
         return $this->respondWithToken($token);
@@ -47,9 +99,29 @@ class AuthController extends Controller
      * Log the user out (Invalidate the token).
      *
      * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Post(
+     *     path="/logout",
+     *     tags={"Auth"},
+     *     summary="Logout",
+     *     security={ {"bearerAuth": {} }},
+     *     @OA\Response(
+     *        response="200",
+     *        description="Successful operation",
+     *     ),
+     *     @OA\Response(
+     *        response="401",
+     *        description="Unauthorized access",
+     *     ),
+     *     @OA\Response(
+     *        response="400",
+     *        description="Bad request",
+     *     )
+     * )
      */
     public function logout()
     {
+        // handle unathorized operation
         auth()->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
@@ -68,7 +140,7 @@ class AuthController extends Controller
     /**
      * Get the token array structure.
      *
-     * @param  string $token
+     * @param string $token
      *
      * @return \Illuminate\Http\JsonResponse
      */

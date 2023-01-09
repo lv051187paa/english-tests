@@ -1,0 +1,807 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Fiat Lux api documentation",
+        "description": "Fiat Lux School OpenApi documentation",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api",
+            "description": "Demo API Server"
+        }
+    ],
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login",
+                "description": "Get a JWT via given credentials.",
+                "operationId": "67d6d0fdd54fba132e1b6f55ca254183",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden access"
+                    },
+                    "422": {
+                        "description": "Wrong credentials"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout",
+                "description": "Log the user out (Invalidate the token).",
+                "operationId": "28d48c13fca984400ac8de99f54ee13a",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tests/{testId}/options": {
+            "post": {
+                "tags": [
+                    "Options"
+                ],
+                "summary": "Saves question option",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "36b1d193e7cfde0631695ef7b487740e",
+                "parameters": [
+                    {
+                        "name": "testId",
+                        "in": "path",
+                        "description": "Question id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreOptionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Option"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tests/{testId}/options/{optionId}": {
+            "post": {
+                "tags": [
+                    "Options"
+                ],
+                "summary": "Updates question option",
+                "description": "Update the specified resource in storage.",
+                "operationId": "337d9fccf31ec5dd2477b46227ba2fac",
+                "parameters": [
+                    {
+                        "name": "testId",
+                        "in": "path",
+                        "description": "Question id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "optionId",
+                        "in": "path",
+                        "description": "Option id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreOptionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Option"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tests": {
+            "get": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Returns a list of questions",
+                "description": "Display a listing of the tests.",
+                "operationId": "bd40e0627369d10b2c046ad5e00c747e",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Test"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "description": "Unauthenticated",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Update test question",
+                "description": "Update the specified resource in storage.",
+                "operationId": "88e60603f7480d209a190686b2ca4115",
+                "parameters": [
+                    {
+                        "name": "test",
+                        "in": "path",
+                        "description": "Question id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreTestRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Test"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "description": "Unauthenticated",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Saves test question for test group",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "4f39e46f9497955adc95a9d2502df728",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreTestRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Test"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tests/group/{test_group_id}": {
+            "get": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Returns a list of questions by test group",
+                "description": "Display a listing of the tests by test group id.",
+                "operationId": "b4f42299c5c27f056a6541b04ebf3e82",
+                "parameters": [
+                    {
+                        "name": "test_group_id",
+                        "in": "path",
+                        "description": "Test group id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Test"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "description": "Unauthenticated",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tests/group/{test_group_id}/quiz-questions": {
+            "get": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Returns a list of questions by test group without is_correct flag for options",
+                "description": "Display a listing of the tests by test group id for users to answer.",
+                "operationId": "6a6c674b56e414bc9cf918e4371f4162",
+                "parameters": [
+                    {
+                        "name": "test_group_id",
+                        "in": "path",
+                        "description": "Test group id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Test"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "description": "Unauthenticated",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/test-groups": {
+            "get": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Returns a list of tests",
+                "description": "Display a listing of the resource.",
+                "operationId": "6963f650c26fe67b201e09a52615a3fa",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TestGroup"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "description": "Unauthenticated",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Saves test name",
+                "description": "Update the specified resource in storage.",
+                "operationId": "e0e7dd5c9fc90259155f1a0d208cee66",
+                "parameters": [
+                    {
+                        "name": "test_group",
+                        "in": "path",
+                        "description": "Test id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreTestGroupRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TestGroup"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Saves test name",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "3a0d22c979e5da8865cd06787757b797",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreTestGroupRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TestGroup"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "StoreOptionRequest": {
+                "title": "Store Option request",
+                "description": "Store Option request body data",
+                "required": [
+                    "text",
+                    "is_correct"
+                ],
+                "properties": {
+                    "text": {
+                        "title": "Option text",
+                        "description": "Option text",
+                        "type": "string"
+                    },
+                    "is_correct": {
+                        "title": "Is correct option",
+                        "description": "Flag for correct test option",
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreTestGroupRequest": {
+                "title": "Store Test request",
+                "description": "Store Test request body data",
+                "required": [
+                    "group_name"
+                ],
+                "properties": {
+                    "group_name": {
+                        "title": "Test name",
+                        "description": "Test name",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreTestRequest": {
+                "title": "Store Question request",
+                "description": "Store Question request body data",
+                "required": [
+                    "question",
+                    "test_group_id"
+                ],
+                "properties": {
+                    "question": {
+                        "title": "Test question",
+                        "description": "Test question text",
+                        "type": "string"
+                    },
+                    "test_group_id": {
+                        "title": "Test group id",
+                        "description": "Test group id, test is related",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "Option": {
+                "title": "Option Response model",
+                "description": "Option Response model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "Current test id",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "text": {
+                        "title": "Option text",
+                        "description": "Option text",
+                        "type": "string",
+                        "format": "string"
+                    },
+                    "is_correct": {
+                        "title": "Is correct option flag",
+                        "description": "MArk if current option is correct for the question",
+                        "type": "boolean",
+                        "format": "boolean"
+                    },
+                    "test_id": {
+                        "title": "Test id",
+                        "description": "Test id for the current option",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "test": {
+                        "$ref": "#/components/schemas/Test"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Option"
+                }
+            },
+            "Test": {
+                "title": "Test Response model",
+                "description": "Test Response model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "Current test id",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "question": {
+                        "title": "Test question",
+                        "description": "Test question",
+                        "type": "string",
+                        "format": "string"
+                    },
+                    "test_group_id": {
+                        "title": "Test group id",
+                        "description": "Test group id",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "test_group": {
+                        "$ref": "#/components/schemas/TestGroup"
+                    },
+                    "options": {
+                        "title": "List of options",
+                        "description": "List of options for the current test",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Option"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Test"
+                }
+            },
+            "TestGroup": {
+                "title": "Test Group Response model",
+                "description": "Test Group Response model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "Current test group id",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "group_name": {
+                        "title": "Test group name",
+                        "description": "Test group name",
+                        "type": "string",
+                        "format": "string"
+                    },
+                    "tests": {
+                        "title": "Questions list",
+                        "description": "List of test questions",
+                        "type": "array",
+                        "format": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Test"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TestGroup"
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "name": "Bearer",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "API Endpoints of Auth operations"
+        },
+        {
+            "name": "Tests",
+            "description": "API Endpoints of Tests"
+        },
+        {
+            "name": "Questions",
+            "description": "API Endpoints of Test Questions"
+        },
+        {
+            "name": "Options",
+            "description": "API Endpoints of Question Options"
+        }
+    ]
+}

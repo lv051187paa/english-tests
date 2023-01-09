@@ -18,6 +18,29 @@ class TestGroupController extends Controller
    * Display a listing of the resource.
    *
    * @return JsonResponse
+   *
+   * @OA\Get(
+   *     path="/test-groups",
+   *     tags={"Tests"},
+   *     summary="Returns a list of tests",
+   *     security={ {"bearerAuth": {} }},
+   *     @OA\Response(
+   *        response="200",
+   *        description="Successful operation",
+   *         @OA\JsonContent(
+   *             type="array",
+   *             @OA\Items(ref="#/components/schemas/TestGroup")
+   *         ),
+   *     ),
+   *     @OA\Response(
+   *        response="401",
+   *        description="Unauthorized operation",
+   *            @OA\JsonContent(
+   *              type="string",
+   *              description="Unauthenticated"
+   *            )
+   *     )
+   * )
    */
   public function index(): JsonResponse
   {
@@ -34,6 +57,32 @@ class TestGroupController extends Controller
    *
    * @param StoreTestGroupRequest $request
    * @return JsonResponse
+   *
+   * @OA\Post(
+   *     path="/test-groups",
+   *     tags={"Tests"},
+   *     summary="Saves test name",
+   *     security={ {"bearerAuth": {} }},
+   *     @OA\RequestBody(
+   *         required=true,
+   *         @OA\JsonContent(ref="#/components/schemas/StoreTestGroupRequest")
+   *     ),
+   *     @OA\Response(
+   *        response="201",
+   *        description="Successful operation",
+   *         @OA\JsonContent(
+   *             ref="#/components/schemas/TestGroup"
+   *         ),
+   *     ),
+   *     @OA\Response(
+   *        response="401",
+   *        description="Unauthorized operation",
+   *     ),
+   *     @OA\Response(
+   *        response="400",
+   *        description="Bad request",
+   *     )
+   * )
    */
   public function store(StoreTestGroupRequest $request): JsonResponse
   {
@@ -52,6 +101,42 @@ class TestGroupController extends Controller
    * @param StoreTestGroupRequest $request
    * @param TestGroup $test_group
    * @return JsonResponse
+   *
+   * @OA\Put(
+   *     path="/test-groups",
+   *     tags={"Tests"},
+   *     summary="Saves test name",
+   *     security={ {"bearerAuth": {} }},
+   *     @OA\Parameter(
+   *         description="Test id",
+   *         in="path",
+   *         name="test_group",
+   *         required=true,
+   *         @OA\Schema(
+   *             type="integer",
+   *             format="int64"
+   *         )
+   *     ),
+   *     @OA\RequestBody(
+   *         required=true,
+   *         @OA\JsonContent(ref="#/components/schemas/StoreTestGroupRequest")
+   *     ),
+   *     @OA\Response(
+   *        response="201",
+   *        description="Successful operation",
+   *         @OA\JsonContent(
+   *             ref="#/components/schemas/TestGroup"
+   *         ),
+   *     ),
+   *     @OA\Response(
+   *        response="401",
+   *        description="Unauthorized operation",
+   *     ),
+   *     @OA\Response(
+   *        response="400",
+   *        description="Bad request",
+   *     )
+   * )
    */
   public function update(StoreTestGroupRequest $request, TestGroup $test_group): JsonResponse
   {
