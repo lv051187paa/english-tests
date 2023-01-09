@@ -9,6 +9,33 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+/**
+ * @OA\Schema(
+ *     description="User Response model",
+ *     title="User Response model",
+ *     @OA\Xml(
+ *         name="User"
+ *     ),
+ *     @OA\Property(
+ *         title="ID",
+ *         description="Current user id",
+ *         format="int64",
+ *         property="id"
+ *     ),
+ *     @OA\Property(
+ *         title="Email",
+ *         description="Current user email",
+ *         type="string",
+ *         property="email"
+ *     ),
+ *     @OA\Property(
+ *         title="Phone",
+ *         description="Current user phone number",
+ *         type="string",
+ *         property="phone"
+ *     )
+ * )
+ */
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;

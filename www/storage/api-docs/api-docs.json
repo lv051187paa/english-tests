@@ -668,6 +668,49 @@
                 },
                 "type": "object"
             },
+            "Answer": {
+                "title": "Answer Response model",
+                "description": "Answer Response model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "Current answer id",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "test_id": {
+                        "title": "question id",
+                        "description": "Current question id",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "user_id": {
+                        "title": "User id",
+                        "description": "Current user id",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "option_id": {
+                        "title": "Option id",
+                        "description": "Current option id",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "test": {
+                        "$ref": "#/components/schemas/Test"
+                    },
+                    "option": {
+                        "$ref": "#/components/schemas/Option"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Answer"
+                }
+            },
             "Option": {
                 "title": "Option Response model",
                 "description": "Option Response model",
@@ -773,6 +816,31 @@
                 "type": "object",
                 "xml": {
                     "name": "TestGroup"
+                }
+            },
+            "User": {
+                "title": "User Response model",
+                "description": "User Response model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "Current user id",
+                        "format": "int64"
+                    },
+                    "email": {
+                        "title": "Email",
+                        "description": "Current user email",
+                        "type": "string"
+                    },
+                    "phone": {
+                        "title": "Phone",
+                        "description": "Current user phone number",
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "User"
                 }
             }
         },
