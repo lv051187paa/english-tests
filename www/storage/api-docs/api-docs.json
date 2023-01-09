@@ -607,6 +607,80 @@
                     }
                 ]
             }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Returns a list of questions",
+                "description": "Display a listing of the resource.",
+                "operationId": "7208c29037df2b8bb02499ba39ed8a78",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/User"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Saves user",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "262eb5ca1fdea354023c0a8870442c1e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreUserRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -663,6 +737,40 @@
                     "test_group_id": {
                         "title": "Test group id",
                         "description": "Test group id, test is related",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreUserRequest": {
+                "title": "Store User request",
+                "description": "Store User request body data",
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "phone_number"
+                ],
+                "properties": {
+                    "name": {
+                        "title": "User name",
+                        "description": "User name",
+                        "type": "string"
+                    },
+                    "email": {
+                        "title": "User email",
+                        "description": "User email",
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "title": "User password",
+                        "description": "User password",
+                        "type": "string"
+                    },
+                    "phone_number": {
+                        "title": "User phone number",
+                        "description": "User phone number",
                         "type": "integer"
                     }
                 },
@@ -832,10 +940,10 @@
                         "description": "Current user email",
                         "type": "string"
                     },
-                    "phone": {
+                    "phone_number": {
                         "title": "Phone",
                         "description": "Current user phone number",
-                        "type": "string"
+                        "type": "integer"
                     }
                 },
                 "type": "object",
@@ -870,6 +978,14 @@
         {
             "name": "Options",
             "description": "API Endpoints of Question Options"
+        },
+        {
+            "name": "Answers",
+            "description": "API Endpoints of Answers"
+        },
+        {
+            "name": "Users",
+            "description": "API Endpoints of Users"
         }
     ]
 }

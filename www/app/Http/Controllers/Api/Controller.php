@@ -34,6 +34,16 @@ namespace App\Http\Controllers\Api;
  *     description="API Endpoints of Question Options"
  * )
  *
+ * @OA\Tag(
+ *     name="Answers",
+ *     description="API Endpoints of Answers"
+ * )
+ *
+ * @OA\Tag(
+ *     name="Users",
+ *     description="API Endpoints of Users"
+ * )
+ *
  * @OA\SecurityScheme(
  *     type="http",
  *     in="header",

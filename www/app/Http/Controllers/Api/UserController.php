@@ -15,6 +15,25 @@ class UserController extends Controller
    * Display a listing of the resource.
    *
    * @return JsonResponse
+   *
+   * @OA\Get(
+   *     path="/users",
+   *     tags={"Users"},
+   *     summary="Returns a list of questions",
+   *     security={ {"bearerAuth": {} }},
+   *     @OA\Response(
+   *        response="200",
+   *        description="Successful operation",
+   *         @OA\JsonContent(
+   *             type="array",
+   *             @OA\Items(ref="#/components/schemas/User")
+   *         ),
+   *     ),
+   *     @OA\Response(
+   *        response="401",
+   *        description="Unauthorized operation"
+   *     )
+   * )
    */
   public function index()
   {
@@ -31,6 +50,33 @@ class UserController extends Controller
    *
    * @param StoreUserRequest $request
    * @return \Illuminate\Http\JsonResponse
+   *
+   *
+   * @OA\Post(
+   *     path="/users",
+   *     tags={"Users"},
+   *     summary="Saves user",
+   *     security={ {"bearerAuth": {} }},
+   *     @OA\RequestBody(
+   *         required=true,
+   *         @OA\JsonContent(ref="#/components/schemas/StoreUserRequest")
+   *     ),
+   *     @OA\Response(
+   *        response="201",
+   *        description="Successful operation",
+   *         @OA\JsonContent(
+   *             ref="#/components/schemas/User"
+   *         ),
+   *     ),
+   *     @OA\Response(
+   *        response="401",
+   *        description="Unauthorized operation",
+   *     ),
+   *     @OA\Response(
+   *        response="400",
+   *        description="Bad request",
+   *     )
+   * )
    */
   public function store(StoreUserRequest $request): JsonResponse
   {

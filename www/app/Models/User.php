@@ -31,8 +31,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  *     @OA\Property(
  *         title="Phone",
  *         description="Current user phone number",
- *         type="string",
- *         property="phone"
+ *         type="int",
+ *         property="phone_number"
  *     )
  * )
  */
